@@ -4,6 +4,6 @@ class Piece:
         self.row = row
         self.color = color
     
-    def move(newCol, newRow):
+    def move(self, newCol, newRow):
         self.col = newCol
         self.row = newRow
