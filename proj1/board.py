@@ -6,6 +6,7 @@ class Board:
         self.size = size
         self.numPieces = (size - 1)*2
         start = size // 2
+        self.center = start - 1
 
         #Create pieces
         self.pieces = []
@@ -38,57 +39,95 @@ class Board:
                 return True
         return False
     
+    def verticalPathEmpty(self, col, initRow, newRow):
+        #Down
+        if initRow < newRow:
+            start = initRow + 1
+            end = newRow + 1
+        #Up
+        else:
+            start = newRow
+            end = initRow
+        for i in range(start, end):
+            if not self.isCellEmpty(i, col):
+                print("up false")
+                return False
+        return True
+            
+    def horizontalPathEmpty(self, row, initCol, newCol):
+        #Right
+        if initCol < newCol:
+            start = initCol
+            end = newCol
+        #Left
+        else:
+            start = newCol
+            end = initCol
+        for i in range(start, end):
+            if not self.isCellEmpty(row, i):
+                print("Horizontal path not empty")
+                return False  
+        return True
+
     #TODO: add case for circular move
     def isPathEmpty(self, initRow, initCol, newRow, newCol):
         #Horizontal move
         if initRow == newRow:
-            #Right
-            if initCol < newCol:
-                for i in range(initCol, newCol):
-                    if not self.isCellEmpty(initRow, i):
-                        print("right false")
-                        return False
-            #Left
-            else:
-                for i in range(newCol, initCol):
-                    if not self.isCellEmpty(initRow, i):
-                        print("left false")
-                        return False
+            if self.horizontalPathEmpty(initRow, initCol, newCol):
+                return True
         #Vertical move
         elif initCol == newCol:
-            #Down
-            if initRow < newRow:
-                print("down")
-                for i in range(initRow + 1, newRow + 1):
-                    print(i, initCol)
-                    if not self.isCellEmpty(i, initCol):
-                        print("down false")
-                        return False
-            #Up
-            else:
-                for i in range(newRow, initRow):
-                    if not self.isCellEmpty(i, initCol):
-                        print("up false")
-                        return False
-        #Circular move
-        print("True")
-        return True
+            if self.verticalPathEmpty(initCol, initRow, newRow):
+                return True
 
-    #TODO: check the player turn
+        #Circular move
+        if initRow == newCol: 
+            #meio de cima para esquerda
+            if initRow < self.center:
+                #ver se a horizontal e vertical estao vazias
+                if self.horizontalPathEmpty(initRow, initCol, self.center) and self.verticalPathEmpty(newCol, self.center, newRow):
+                    return True
+            #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    
+            elif initRow > self.center + 2:
+                return False
+
+            
+
+    #Checks if the move chosen is valid. Return True if it is and False otherwise
     def validMove(self, piece, newCol, newRow):
         #check if the move is valid
         if piece.col == newCol and piece.row == newRow:
             print("Invalid move - same pos")
+            return False
         elif self.isCellForbidden(newRow, newCol):
             print("Invalid move - forbidden move")
+            return False
         else:
             if self.isPathEmpty(piece.row, piece.col, newRow, newCol):
-                piece.move(newCol, newRow)
                 print("Valid move")
+                return True
             else:
-                print("aaaaaa")
-        #check if the path is free
+                return False
     
+    #Checks if the chosen move is valid and moves the piece. Returns true if the move is valid and false otherwise.
+    def movePiece(self, initRow, initCol, color, newCol, newRow):
+        canPlay = False
+        for piece in self.pieces:
+            if piece.row == initRow and piece.col == initCol:
+                #Check turn
+                if piece.color == color:
+                    canPlay = True
+                    p = piece
+                else:
+                    print("You can't move the other player's piece.")
+                    return False
+        if self.validMove(p, newCol, newRow) and canPlay:
+            p.move(newCol, newRow)
+            return True
+        else:
+            print("Invalid move!")
+            return False
+
     def printPieces(self):
         print("pieces: ")
         for obj in self.pieces:
@@ -103,6 +142,7 @@ b = Board(9)
 #print(b.numPieces)
 #b.printPieces()
 p = Piece(3,3,'black')
-b.isPathEmpty(p.row, p.col, 4, 3)
+#b.isPathEmpty(p.row, p.col, 4, 3)
+b.movePiece(3,3,'white',3,4)
 #b.validMove(p, 3, 4)
-#b.printPieces()
+b.printPieces()
