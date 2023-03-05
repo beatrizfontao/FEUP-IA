@@ -19,130 +19,157 @@ class Board:
                     piece = Piece(i, j, 'black')
                     self.pieces.append(piece)
 
-        self.forbiddenCells = []
+        self.forbidden_cells = []
         for i in range(size):
             for j in range(size):
                 if (i >= 0 and i < start - 1) or (i > start + 1 and i < size):
                     if (j >= 0 and j < start - 1) or (j > start + 1 and j < size):
                         cell = (i, j)
-                        self.forbiddenCells.append(cell)
+                        self.forbidden_cells.append(cell)
 
-    def isCellEmpty(self, row, col):
+    def is_cell_empty(self, row, col):
         for obj in self.pieces:
             if obj.row == row and obj.col == col:
                 return False
         return True
     
-    def isCellForbidden(self, row, col):
-        for (r,c) in self.forbiddenCells:
+    def is_cell_forbidden(self, row, col):
+        for (r,c) in self.forbidden_cells:
             if r == row and c == col:
                 return True
         return False
     
-    def verticalPathEmpty(self, col, initRow, newRow):
+    def vertical_path_empty(self, col, init_row, new_row):
         #Down
-        if initRow < newRow:
-            start = initRow + 1
-            end = newRow + 1
+        if init_row < new_row:
+            start = init_row + 1
+            end = new_row + 1
         #Up
         else:
-            start = newRow
-            end = initRow
+            start = new_row
+            end = init_row
         for i in range(start, end):
-            if not self.isCellEmpty(i, col):
+            if not self.is_cell_empty(i, col):
                 print("up false")
                 return False
         return True
             
-    def horizontalPathEmpty(self, row, initCol, newCol):
+    def horizontal_path_empty(self, row, init_col, new_col):
         #Right
-        if initCol < newCol:
-            start = initCol
-            end = newCol
+        if init_col < new_col:
+            start = init_col
+            end = new_col
         #Left
         else:
-            start = newCol
-            end = initCol
+            start = new_col
+            end = init_col
         for i in range(start, end):
-            if not self.isCellEmpty(row, i):
+            if not self.is_cell_empty(row, i):
                 print("Horizontal path not empty")
                 return False  
         return True
 
     #TODO: add case for circular move
-    def isPathEmpty(self, initRow, initCol, newRow, newCol):
+    def is_path_empty(self, init_row, init_col, new_row, new_col):
         #Horizontal move
-        if initRow == newRow:
-            if self.horizontalPathEmpty(initRow, initCol, newCol):
+        if init_row == new_row:
+            if self.horizontal_path_empty(init_row, init_col, new_col):
                 return True
         #Vertical move
-        elif initCol == newCol:
-            if self.verticalPathEmpty(initCol, initRow, newRow):
+        elif init_col == new_col:
+            if self.vertical_path_empty(init_col, init_row, new_row):
                 return True
 
         #Circular move
-        if initRow == newCol: 
+        #VERMELHO
+        if init_row == new_col: 
             #meio de cima para esquerda
-            if initRow < self.center:
+            if init_row < self.center:
                 #ver se a horizontal e vertical estao vazias
-                if self.horizontalPathEmpty(initRow, initCol, self.center) and self.verticalPathEmpty(newCol, self.center, newRow):
+                if self.horizontal_path_empty(init_row, init_col, self.center) and self.vertical_path_empty(new_col, self.center, new_row):
                     return True
-            #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    
-            elif initRow > self.center + 2:
-                return False
-
+            #meio de baixo para a direita   
+            elif init_row > self.center + 2:
+                if self.horizontal_path_empty(init_row, init_col, self.center+2) and self.vertical_path_empty(new_col, self.center+2, new_row):
+                    return True
+        #VERDE
+        elif init_col == new_row:
+            if init_col < self.center:
+                if self.vertical_path_empty(init_col, init_row, self.center) and self.horizontal_path_empty(new_row, self.center, new_col):
+                    return True
+            #meio de baixo para a direita   
+            elif init_col > self.center + 2:
+                if self.vertical_path_empty(init_col, init_row, self.center+2) and self.horizontal_path_empty(new_row, self.center+2, new_col):
+                    return True
+        #AMARELO
+        elif new_col == self.size - 1 - init_row:
+            if self.horizontal_path_empty(init_row, init_col, self.center + 2) and self.vertical_path_empty(new_col, self.center, new_row):
+                return True
+        #ROXO
+        elif new_row == self.size - 1 - init_col:
+            if self.vertical_path_empty(init_col, init_row, self.center) and self.horizontal_path_empty(new_row, self.center+2, new_col):
+                return True
+        #ROSA
+        elif new_col == self.size - 1 - init_row:
+            if self.vertical_path_empty(init_col, init_row, self.center + 2) and self.horizontal_path_empty(new_row, self.center, new_col):
+                return True
+        #LARANJA
+        elif new_row == self.size - 1 - init_col:
+            if self.horizontal_path_empty(init_row, init_col, self.center) and self.vertical_path_empty(new_col, self.center + 2, new_row):
+                return True
+        return False
+        
             
 
     #Checks if the move chosen is valid. Return True if it is and False otherwise
-    def validMove(self, piece, newCol, newRow):
+    def valid_move(self, piece, new_col, new_row):
         #check if the move is valid
-        if piece.col == newCol and piece.row == newRow:
+        if piece.col == new_col and piece.row == new_row:
             print("Invalid move - same pos")
             return False
-        elif self.isCellForbidden(newRow, newCol):
+        elif self.is_cell_forbidden(new_row, new_col):
             print("Invalid move - forbidden move")
             return False
         else:
-            if self.isPathEmpty(piece.row, piece.col, newRow, newCol):
+            if self.is_path_empty(piece.row, piece.col, new_row, new_col):
                 print("Valid move")
                 return True
             else:
                 return False
     
     #Checks if the chosen move is valid and moves the piece. Returns true if the move is valid and false otherwise.
-    def movePiece(self, initRow, initCol, color, newCol, newRow):
-        canPlay = False
+    def move_piece(self, init_row, init_col, color, new_row, new_col):
+        can_play = False
         for piece in self.pieces:
-            if piece.row == initRow and piece.col == initCol:
+            if piece.row == init_row and piece.col == init_col:
                 #Check turn
                 if piece.color == color:
-                    canPlay = True
+                    can_play = True
                     p = piece
                 else:
                     print("You can't move the other player's piece.")
                     return False
-        if self.validMove(p, newCol, newRow) and canPlay:
-            p.move(newCol, newRow)
+        if self.valid_move(p, new_col, new_row) and can_play:
+            for obj in self.pieces:
+                if obj.is_equal(p):
+                    obj.move(new_col, new_row)
             return True
         else:
-            print("Invalid move!")
+            print("Invalid move!aaaaa")
             return False
 
-    def printPieces(self):
+    def print_pieces(self):
         print("pieces: ")
         for obj in self.pieces:
             print(obj.row, obj.col)
             print(obj.color)
-        #print("cells: ")
-        #for obj in self.forbiddenCells:
-        #    print(obj[0], obj[1]) 
+            print('')
 
 #TEST
 b = Board(9)
 #print(b.numPieces)
 #b.printPieces()
 p = Piece(3,3,'black')
-#b.isPathEmpty(p.row, p.col, 4, 3)
-b.movePiece(3,3,'white',3,4)
-#b.validMove(p, 3, 4)
-b.printPieces()
+                       #col, row
+b.move_piece(1, 3, 'white', 3, 1)
+b.print_pieces()
