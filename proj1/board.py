@@ -1,14 +1,15 @@
 from piece import *
 
+
 class Board:
-    #Size must be odd
+    # Size must be odd
     def __init__(self, size):
         self.size = size
         self.numPieces = (size - 1)*2
         start = size // 2
         self.center = start - 1
 
-        #Create pieces
+        # Create pieces
         self.pieces = []
         for i in range(start-1, start + 3, 2):
             for j in range(size):
@@ -30,43 +31,42 @@ class Board:
         self.circle_paths = []
         for num in range(self.center):
             circle = []
-            #top
+            # top
             for col in range(num, size - num - 1):
                 pos = (num, col)
                 if pos not in self.forbidden_cells:
                     circle.append(pos)
-            #right
+            # right
             col = size - 1 - num
             for row in range(num, size - num):
                 pos = (row, col)
                 if pos not in self.forbidden_cells:
                     circle.append(pos)
-            #bottom
-            row = size - 1 - num 
+            # bottom
+            row = size - 1 - num
             for col in reversed(range(num, size - num - 1)):
                 pos = (row, col)
                 if pos not in self.forbidden_cells:
                     circle.append(pos)
-            #left
+            # left
             for row in reversed(range(num, size - num - 1)):
                 pos = (row, num)
                 if pos not in self.forbidden_cells:
                     circle.append(pos)
             self.circle_paths.append(circle)
 
-
     def is_cell_empty(self, row, col):
         for obj in self.pieces:
             if obj.row == row and obj.col == col:
                 return False
         return True
-    
+
     def is_cell_forbidden(self, row, col):
-        for (r,c) in self.forbidden_cells:
+        for (r, c) in self.forbidden_cells:
             if r == row and c == col:
                 return True
         return False
-    
+
     def vertical_path_empty(self, col, init_row, new_row):
         cur_row = init_row
         while cur_row != new_row:
@@ -83,7 +83,7 @@ class Board:
             if cur_row == new_row:
                 return True
         return False
-            
+
     def horizontal_path_empty(self, row, init_col, new_col):
         cur_col = init_col
         while cur_col != new_col:
@@ -100,7 +100,7 @@ class Board:
             if cur_col == new_col:
                 return True
         return False
-    
+
     def find_circular_path(self, row, col):
         print('center = ', self.center)
         print('row = ', row)
@@ -122,14 +122,14 @@ class Board:
         for i in range(len(list)):
             if list[i] == element:
                 return i
-        return -1 
+        return -1
 
     def circular_path_empty(self, init_row, init_col, new_row, new_col):
         c = self.find_circular_path(init_row, init_col)
         print('c = ', c)
         if c == -1:
             return False
-        
+
         i = self.get_index((init_row, init_col), self.circle_paths[c])
         print('index = ', i)
         l = len(self.circle_paths[c])
@@ -150,25 +150,25 @@ class Board:
             if cur_pos == (new_row, new_col):
                 return True
 
-    #TODO: add case for circular move
+    # TODO: add case for circular move
     def is_path_empty(self, init_row, init_col, new_row, new_col):
-        #Horizontal move
+        # Horizontal move
         if init_row == new_row:
             print("Same Row")
             if self.horizontal_path_empty(init_row, init_col, new_col):
                 return True
-        #Vertical move
+        # Vertical move
         elif init_col == new_col:
             print("Same Col")
             if self.vertical_path_empty(init_col, init_row, new_row):
                 return True
-        #Circular move
+        # Circular move
         else:
             return self.circular_path_empty(init_row, init_col, new_row, new_col)
 
-    #Checks if the move chosen is valid. Return True if it is and False otherwise
+    # Checks if the move chosen is valid. Return True if it is and False otherwise
     def valid_move(self, piece, new_col, new_row):
-        #check if the move is valid
+        # check if the move is valid
         if piece.col == new_col and piece.row == new_row:
             print("Invalid move - same pos")
             return False
@@ -181,13 +181,13 @@ class Board:
                 return True
             else:
                 return False
-    
-    #Checks if the chosen move is valid and moves the piece. Returns true if the move is valid and false otherwise.
+
+    # Checks if the chosen move is valid and moves the piece. Returns true if the move is valid and false otherwise.
     def move_piece(self, init_row, init_col, color, new_row, new_col):
         can_play = False
         for piece in self.pieces:
             if piece.row == init_row and piece.col == init_col:
-                #Check turn
+                # Check turn
                 if piece.color == color:
                     can_play = True
                     p = piece
@@ -202,6 +202,52 @@ class Board:
             return True
         else:
             return False
+
+
+    def piece_valid_moves(self, row, col):
+        valid_moves = []
+        cur_row = row
+        cur_col = col
+        # vertical
+        a = True
+        # down
+        while a:
+            cur_row = (cur_row + 1) % self.size
+            a = self.vertical_path_empty(col, row, cur_row)
+            if a:
+                valid_moves.append((cur_row, col))
+            else:
+                break
+        # up
+        a = True
+        cur_col = col
+        while a:
+            cur_col = (cur_col - 1) % self.size
+            a = self.vertical_path_empty(col, cur_row, row)
+            if a:
+                valid_moves.append((cur_row, col))
+            else:
+                break
+        #horizontal
+                a = True
+        # down
+        while a:
+            cur_row = (cur_row + 1) % self.size
+            a = self.vertical_path_empty(col, row, cur_row)
+            if a:
+                valid_moves.append((cur_row, col))
+            else:
+                break
+        # up
+        a = True
+        cur_row = row
+        while a:
+            cur_row = (cur_row - 1) % self.size
+            a = self.vertical_path_empty(col, cur_row, row)
+            if a:
+                valid_moves.append((cur_row, col))
+            else:
+                break
 
     def print_pieces(self):
         print("pieces: ")
