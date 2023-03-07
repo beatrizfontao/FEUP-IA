@@ -2,8 +2,9 @@ from piece import *
 
 class Board:
     #tamanho do tabuleiro deve ser impar
-    def __init__(self, size):
+    def __init__(self, size, image):
         self.size = size
+        self.image = image
         self.numPieces = (size - 1)*2
         start = size // 2
 
@@ -23,11 +24,11 @@ class Board:
             print(obj.row)
             print(obj.col)
             print(obj.color)
-    
+
 #TEST
-b = Board(11)
-print(b.numPieces)
-b.print_pieces()
-b.pieces[0].move(1,1)
-print('-----------------------')
-b.print_pieces()
+#b = Board(11)
+#print(b.numPieces)
+#b.print_pieces()
+#b.pieces[0].move(1,1)
+#print('-----------------------')
+#b.print_pieces()
