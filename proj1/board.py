@@ -19,6 +19,14 @@ class Board:
                     piece = Piece(57*i + 63, 58*j + 80, 'player2')
                     self.pieces.append(piece)
 
+        self.forbidden_cells = []
+        for i in range(size):
+            for j in range(size):
+                if (i >= 0 and i < start - 1) or (i > start + 1 and i < size):
+                    if (j >= 0 and j < start - 1) or (j > start + 1 and j < size):
+                        cell = (i, j)
+                        self.forbidden_cells.append(cell)
+
         self.circle_paths = []
         for num in range(self.center):
             circle = []
