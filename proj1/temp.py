@@ -20,6 +20,7 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+
     pieces.draw(screen)
     pygame.display.update()
     clock.tick(60)

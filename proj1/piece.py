@@ -1,12 +1,12 @@
 import pygame
 
 class Piece(pygame.sprite.Sprite):
-    def __init__(self, col, row, color):
+    def __init__(self, col, row, player):
         super().__init__()
         self.col = col
         self.row = row
-        self.color = color
-        if color == 'white':
+        self.player = player
+        if player == 'player1':
             self.image = pygame.image.load('piece.png').convert_alpha()
         else:
             self.image = pygame.image.load('pieceB.png').convert_alpha()
@@ -17,4 +17,4 @@ class Piece(pygame.sprite.Sprite):
         self.row = newRow
 
     def is_equal(self, piece):
-        return self.row == piece.row and self.col == piece.col and self.color == piece.color
+        return self.row == piece.row and self.col == piece.col and self.player == piece.player
