@@ -1,7 +1,7 @@
 from Piece import *
 
 class Board:
-    #tamanho do tabuleiro deve ser impar
+    #Size must be odd
     def __init__(self, size):
         self.size = size
         self.numPieces = (size - 1)*2
@@ -13,10 +13,10 @@ class Board:
         for i in range(start-1, start + 3, 2):
             for j in range(size):
                 if j >= 0 and j < start:
-                    piece = Piece(i, j, 'white')
+                    piece = Piece(57*i + 63, 58*j + 80, 'white')
                     self.pieces.append(piece)
                 elif j >= start+1 and j < size:
-                    piece = Piece(i, j, 'black')
+                    piece = Piece(57*i + 63, 58*j + 80, 'black')
                     self.pieces.append(piece)
 
         self.forbidden_cells = []
@@ -24,8 +24,36 @@ class Board:
             for j in range(size):
                 if (i >= 0 and i < start - 1) or (i > start + 1 and i < size):
                     if (j >= 0 and j < start - 1) or (j > start + 1 and j < size):
-                        cell = (i, j)
+                        cell = (55*i + 57, 57*j + 80)
                         self.forbidden_cells.append(cell)
+
+        self.circle_paths = []
+        for num in range(self.center):
+            circle = []
+            #top
+            for col in range(num, size - num - 1):
+                pos = (num, col)
+                if pos not in self.forbidden_cells:
+                    circle.append(pos)
+            #right
+            col = size - 1 - num
+            for row in range(num, size - num):
+                pos = (row, col)
+                if pos not in self.forbidden_cells:
+                    circle.append(pos)
+            #bottom
+            row = size - 1 - num
+            for col in reversed(range(num, size - num - 1)):
+                pos = (row, col)
+                if pos not in self.forbidden_cells:
+                    circle.append(pos)
+            #left
+            for row in reversed(range(num, size - num - 1)):
+                pos = (row, num)
+                if pos not in self.forbidden_cells:
+                    circle.append(pos)
+            self.circle_paths.append(circle)
+
 
     def is_cell_empty(self, row, col):
         for obj in self.pieces:
@@ -40,86 +68,103 @@ class Board:
         return False
 
     def vertical_path_empty(self, col, init_row, new_row):
-        #Down
-        if init_row < new_row:
-            start = init_row + 1
-            end = new_row + 1
-        #Up
-        else:
-            start = new_row
-            end = init_row
-        for i in range(start, end):
-            if not self.is_cell_empty(i, col):
-                print("up false")
+        cur_row = init_row
+        while cur_row != new_row:
+            cur_row = (cur_row + 1) % self.size
+            if not self.is_cell_empty(cur_row, col):
+                break
+            if cur_row == new_row:
+                return True
+        cur_row = init_row
+        while cur_row != new_row:
+            cur_row = (cur_row - 1) % self.size
+            if not self.is_cell_empty(cur_row, col):
                 return False
-        return True
+            if cur_row == new_row:
+                return True
+        return False
 
     def horizontal_path_empty(self, row, init_col, new_col):
-        #Right
-        if init_col < new_col:
-            start = init_col
-            end = new_col
-        #Left
-        else:
-            start = new_col
-            end = init_col
-        for i in range(start, end):
-            if not self.is_cell_empty(row, i):
-                print("Horizontal path not empty")
+        cur_col = init_col
+        while cur_col != new_col:
+            cur_col = (cur_col + 1) % self.size
+            if not self.is_cell_empty(row, cur_col):
+                break
+            if cur_col == new_col:
+                return True
+        cur_col = init_col
+        while cur_col != new_col:
+            cur_col = (cur_col - 1) % self.size
+            if not self.is_cell_empty(row, cur_col):
                 return False
-        return True
+            if cur_col == new_col:
+                return True
+        return False
+
+    def find_circular_path(self, row, col):
+        print('center = ', self.center)
+        print('row = ', row)
+        print('col = ', col)
+        if 0 <= row < self.center and self.center <= col < self.center + 3:
+            print('entrou')
+            return row
+        elif self.center <= row < self.center + 3 and 0 < col < self.center:
+            return col
+        elif self.center + 2 < row < self.size and self.center <= col < self.center + 3:
+            return self.size - 1 - row
+        elif self.center <= row < self.center + 3 and self.center + 2 < col < self.size:
+            return self.size - 1 - col
+        else:
+            print('Invalid move')
+            return -1
+
+    def get_index(self, element, list):
+        for i in range(len(list)):
+            if list[i] == element:
+                return i
+        return -1
+
+    def circular_path_empty(self, init_row, init_col, new_row, new_col):
+        c = self.find_circular_path(init_row, init_col)
+        print('c = ', c)
+        if c == -1:
+            return False
+
+        i = self.get_index((init_row, init_col), self.circle_paths[c])
+        print('index = ', i)
+        l = len(self.circle_paths[c])
+        cur_pos = (init_row, init_col)
+        j = i
+        while cur_pos != (new_row, new_col):
+            j = (j + 1) % l
+            cur_pos = self.circle_paths[c][j]
+            if not self.is_cell_empty(cur_pos[0], cur_pos[1]):
+                break
+            if cur_pos == (new_row, new_col):
+                return True
+        while cur_pos != (new_row, new_col):
+            i = (i - 1) % l
+            cur_pos = self.circle_paths[c][i]
+            if not self.is_cell_empty(cur_pos[0], cur_pos[1]):
+                return False
+            if cur_pos == (new_row, new_col):
+                return True
 
     #TODO: add case for circular move
     def is_path_empty(self, init_row, init_col, new_row, new_col):
         #Horizontal move
         if init_row == new_row:
+            print("Same Row")
             if self.horizontal_path_empty(init_row, init_col, new_col):
                 return True
         #Vertical move
         elif init_col == new_col:
+            print("Same Col")
             if self.vertical_path_empty(init_col, init_row, new_row):
                 return True
-
         #Circular move
-        #VERMELHO
-        if init_row == new_col:
-            #meio de cima para esquerda
-            if init_row < self.center:
-                #ver se a horizontal e vertical estao vazias
-                if self.horizontal_path_empty(init_row, init_col, self.center) and self.vertical_path_empty(new_col, self.center, new_row):
-                    return True
-            #meio de baixo para a direita
-            elif init_row > self.center + 2:
-                if self.horizontal_path_empty(init_row, init_col, self.center+2) and self.vertical_path_empty(new_col, self.center+2, new_row):
-                    return True
-        #VERDE
-        elif init_col == new_row:
-            if init_col < self.center:
-                if self.vertical_path_empty(init_col, init_row, self.center) and self.horizontal_path_empty(new_row, self.center, new_col):
-                    return True
-            #meio de baixo para a direita
-            elif init_col > self.center + 2:
-                if self.vertical_path_empty(init_col, init_row, self.center+2) and self.horizontal_path_empty(new_row, self.center+2, new_col):
-                    return True
-        #AMARELO
-        elif new_col == self.size - 1 - init_row:
-            if self.horizontal_path_empty(init_row, init_col, self.center + 2) and self.vertical_path_empty(new_col, self.center, new_row):
-                return True
-        #ROXO
-        elif new_row == self.size - 1 - init_col:
-            if self.vertical_path_empty(init_col, init_row, self.center) and self.horizontal_path_empty(new_row, self.center+2, new_col):
-                return True
-        #ROSA
-        elif new_col == self.size - 1 - init_row:
-            if self.vertical_path_empty(init_col, init_row, self.center + 2) and self.horizontal_path_empty(new_row, self.center, new_col):
-                return True
-        #LARANJA
-        elif new_row == self.size - 1 - init_col:
-            if self.horizontal_path_empty(init_row, init_col, self.center) and self.vertical_path_empty(new_col, self.center + 2, new_row):
-                return True
-        return False
-
-
+        else:
+            return self.circular_path_empty(init_row, init_col, new_row, new_col)
 
     #Checks if the move chosen is valid. Return True if it is and False otherwise
     def valid_move(self, piece, new_col, new_row):
@@ -149,27 +194,46 @@ class Board:
                 else:
                     print("You can't move the other player's piece.")
                     return False
-        if self.valid_move(p, new_col, new_row) and can_play:
+        print(can_play)
+        if can_play and self.valid_move(p, new_col, new_row):
             for obj in self.pieces:
                 if obj.is_equal(p):
                     obj.move(new_col, new_row)
             return True
         else:
-            print("Invalid move!aaaaa")
             return False
 
     def print_pieces(self):
         print("pieces: ")
         for obj in self.pieces:
-            print(obj.row, obj.col)
-            print(obj.color)
-            print('')
+             print(obj.row, obj.col)
+             print(obj.color)
+             print('')
+        # for a in self.circle_paths:
+        #     print('--------')
+        #     for (r, c) in a:
+        #         print(r, c)
+
+    # def has_available_moves(self, row, col, color):
+    #     if row == 0 and self.center <= col < self.center + 3:
+    #         self.is_cell_empty()
+
+    #def game_over(self):
+
 
 #TEST
 #b = Board(9)
-#print(b.numPieces)
-#b.printPieces()
-#p = Piece(3,3,'black')
-#col, row
+
+#teste da a volta:
+# b.move_piece(5, 3, 'black', 4, 3)
+# b.move_piece(3, 5, 'white', 4, 5)
+# b.print_pieces()
+# print('---')
+# b.move_piece(4, 5, 'white', 4, 1)
+
+#teste circulo
+#1
 #b.move_piece(1, 3, 'white', 3, 1)
 #b.print_pieces()
+#a = b.circular_path_empty(1, 3, 3, 1)
+#print(a)

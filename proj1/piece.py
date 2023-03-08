@@ -18,8 +18,3 @@ class Piece(pygame.sprite.Sprite):
 
     def is_equal(self, piece):
         return self.row == piece.row and self.col == piece.col and self.color == piece.color
-
-    def input(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.MOUSEBUTTONDOWN] and self.rect.collidepoint(keys[pygame.MOUSEBUTTONDOWN].pos):
-            print("something")
