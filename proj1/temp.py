@@ -1,5 +1,4 @@
 import pygame, sys
-from Piece import Piece
 from Board import Board
 pygame.init()
 
