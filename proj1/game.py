@@ -31,4 +31,5 @@ def game(size, mode):
     else:
         print('Player 2 wins!')
 
-game(9, 1)
+if __name__ == "__main__":
+    game(9, 1)
