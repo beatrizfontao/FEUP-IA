@@ -1,5 +1,6 @@
 from Piece import *
 from Circle import *
+import sys
 
 class Board:
     # Size must be odd
@@ -244,9 +245,13 @@ class Board:
         for circle in self.circles:
             circle.draw(display)
 
-    def print_pieces(self):
-        print("pieces: ")
-        for obj in self.pieces:
-             print(obj.row, obj.col)
-             print(obj.player)
-             print('')
+    def get_min_valid_moves(self, player):
+        min = sys.maxsize
+        min_piece = None
+        for piece in self.pieces:
+            if piece.player == player:
+                min_moves = len(self.piece_valid_moves(piece.row, piece.col))
+                if  min_moves < min:
+                    min = min_moves
+                    min_piece = piece 
+        return min_piece

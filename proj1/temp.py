@@ -1,6 +1,4 @@
-import pygame
-import sys
-from Piece import Piece
+import pygame, sys
 from Board import Board
 pygame.init()
 
