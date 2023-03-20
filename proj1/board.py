@@ -1,6 +1,6 @@
 from Piece import *
 from Circle import *
-import sys
+import sys, pygame
 
 class Board:
     # Size must be odd
@@ -11,6 +11,8 @@ class Board:
         self.center = start - 1
         self.selected_piece = None
         self.turn = 'player1'
+
+        pygame.init()
 
         # Create pieces
         self.pieces = []
@@ -172,6 +174,11 @@ class Board:
             cur_pos = self.circle_paths[c][j]
         return valid_moves
 
+    def move(self, p, new_row, new_col):
+        for obj in self.pieces:
+            if obj.is_equal(p):
+                obj.move(new_col, new_row)
+
     # Checks if the chosen move is valid and moves the piece. Returns true if the move is valid and false otherwise.
     def move_piece(self, init_row, init_col, player, new_row, new_col):
         right_turn = False
@@ -186,9 +193,7 @@ class Board:
                     return False
         valid_moves = self.piece_valid_moves(init_row, init_col)
         if right_turn and (new_row, new_col) in valid_moves:
-            for obj in self.pieces:
-                if obj.is_equal(p):
-                    obj.move(new_col, new_row)
+            self.move(p, new_row, new_col)
             return True
         else:
             return False
@@ -245,13 +250,17 @@ class Board:
         for circle in self.circles:
             circle.draw(display)
 
-    def get_min_valid_moves(self, player):
-        min = sys.maxsize
-        min_piece = None
+    def get_player_pieces(self, player):
+        pieces = []
         for piece in self.pieces:
             if piece.player == player:
-                min_moves = len(self.piece_valid_moves(piece.row, piece.col))
-                if  min_moves < min:
-                    min = min_moves
-                    min_piece = piece 
-        return min_piece
+                pieces.append(piece)
+        return pieces
+
+    def get_valid_moves(self, player):
+        pieces = self.get_player_pieces(player)
+        moves = []
+        for piece in pieces:
+            moves.append((piece, self.piece_valid_moves(piece.row, piece.col)))
+            print((piece, self.piece_valid_moves(piece.row, piece.col)))
+        return moves

@@ -14,6 +14,8 @@ def draw(display):
     board.draw(display)
     pygame.display.update()
 
+#board.get_valid_moves('player1')
+
 while True:
     pos = pygame.mouse.get_pos()
     for event in pygame.event.get():
