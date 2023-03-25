@@ -1,15 +1,13 @@
 import pygame
 import sys
 
-from enum import Enum
-
+from enum import Enum 
 
 class PlayerMode(Enum):
     HUMAN = 1
     AI_HARD = 2
     AI_MEDIUM = 3
     AI_EASY = 4
-
 
 pygame.init()
 
@@ -21,7 +19,7 @@ font_option = pygame.font.SysFont(None, 30)
 
 def draw_main_menu():
     menu = font_title.render("Menu", True, (0, 0, 0))
-    menu_rect = menu.get_rect(center=(size[0] // 2, 100))
+    menu_rect = menu.get_rect(center=(290, 100))
 
     human_vs_human = font_option.render("Human vs Human", True, (0, 0, 0))
     human_vs_human_rect = human_vs_human.get_rect(center=(size[0] // 2, 250))
@@ -44,8 +42,17 @@ def draw_main_menu():
                     return (PlayerMode.HUMAN, draw_ai_menu(1))
                 elif ai_vs_ai_rect.collidepoint(event.pos):
                     return (draw_ai_menu(1), draw_ai_menu(2))
-
+                
         screen.fill((255, 255, 255))
+        # Draw orange boxes around each option
+        pygame.draw.rect(screen, (255, 165, 0), human_vs_human_rect, 2)
+        pygame.draw.rect(screen, (255, 165, 0), human_vs_ai_rect, 2)
+        pygame.draw.rect(screen, (255, 165, 0), ai_vs_ai_rect, 2)
+
+        # Draw blue box around the menu text
+        pygame.draw.rect(screen, (0, 0, 255), (menu_rect.left - 10, menu_rect.top - 10,
+                                            menu_rect.width + 20, menu_rect.height + 20), 2)
+
         screen.blit(menu, menu_rect)
         screen.blit(human_vs_human, human_vs_human_rect)
         screen.blit(human_vs_ai, human_vs_ai_rect)
@@ -91,5 +98,3 @@ def draw_ai_menu(player):
         screen.blit(hard_ai, hard_ai_rect)
 
         pygame.display.update()
-
-draw_main_menu()

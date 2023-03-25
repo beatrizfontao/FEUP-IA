@@ -1,5 +1,8 @@
 import pygame, sys
 from Board import Board
+
+from Menu import *
+
 pygame.init()
 
 #Screen and Background
