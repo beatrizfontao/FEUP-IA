@@ -177,7 +177,9 @@ class Board:
     def move(self, p, new_row, new_col):
         for obj in self.pieces:
             if obj.is_equal(p):
+                self.turn = 'player1' if self.turn == 'player2' else 'player2'
                 obj.move(new_col, new_row)
+                break
 
     # Checks if the chosen move is valid and moves the piece. Returns true if the move is valid and false otherwise.
     def move_piece(self, init_row, init_col, player, new_row, new_col):
@@ -226,10 +228,9 @@ class Board:
 
         elif (clicked_circle.y, clicked_circle.x) in self.piece_valid_moves(self.selected_piece.row, self.selected_piece.col):
             self.get_circle_from_pos((self.selected_piece.screen_x, self.selected_piece.screen_y)).occupying_piece = None
-            self.selected_piece.move(clicked_circle.x, clicked_circle.y)
+            self.move_piece(self.selected_piece.row, self.selected_piece.col, self.turn, clicked_circle.y, clicked_circle.x)
             clicked_circle.occupying_piece = self.selected_piece
             self.selected_piece = None
-            self.turn = 'player1' if self.turn == 'player2' else 'player2'
 
         for circle in self.circles:
             circle.highlight = False
