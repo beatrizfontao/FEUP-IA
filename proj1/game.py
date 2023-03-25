@@ -1,11 +1,4 @@
-from enum import Enum
 from Board import *
-
-class PlayerMode(Enum):
-    HUMAN = 1
-    AI_HARD = 2
-    AI_MEDIUM = 3
-    AI_EASY = 4
 
 def ask_move(player_turn):
     print(player_turn + ' turn')
