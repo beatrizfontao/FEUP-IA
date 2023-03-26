@@ -18,7 +18,7 @@ def execute_minimax_move(board, evaluate_func, depth):
 
 def minimax(state, depth, alpha, beta, maximizing, player, evaluate_func):
     if depth == 0 or state.is_game_over() != 0:
-        return evaluate_func(state, player) * (1 if player == 'player1' else -1)
+        return evaluate_func(state) * (1 if player == 'player1' else -1)
     
     if maximizing:
         max_eval = float('-inf')
@@ -43,13 +43,17 @@ def minimax(state, depth, alpha, beta, maximizing, player, evaluate_func):
                     break
         return min_eval
 
-def enemy_min_moves(board, player):
-    min = float('inf')
-    index = -1
-    for i in range(len(board.pieces)):
-        if board.pieces[i].player == player:
-            min_moves = len(board.piece_valid_moves(board.pieces[i].row, board.pieces[i].col))
-            if  min_moves < min:
-                min = min_moves
-                index = i
-    return (index, min)
+def num_enemy_moves(board):
+    available_moves = len(board.get_valid_moves(board.turn))
+    return float('inf') if available_moves == 0 else 1/available_moves
+    
+#def enemy_min_moves(board, player):
+#    min = float('inf')
+#    index = -1
+#    for i in range(len(board.pieces)):
+#        if board.pieces[i].player == player:
+#            min_moves = len(board.piece_valid_moves(board.pieces[i].row, board.pieces[i].co\xl))
+#            if  min_moves < min:
+#                min = min_moves
+#                index = i
+#    return (index, min)

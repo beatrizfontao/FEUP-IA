@@ -1,5 +1,6 @@
 import pygame, sys
 from Board import Board
+from Minimax import *
 
 from Menu import *
 
@@ -35,6 +36,7 @@ def game(playerMode):
             case PlayerMode.HUMAN:
                 human_turn(board)
             case PlayerMode.AI_EASY:
+                execute_minimax_move(board, num_enemy_moves, 3)
                 print('ai easy')
             case PlayerMode.AI_MEDIUM:
                 print('ai medium')
