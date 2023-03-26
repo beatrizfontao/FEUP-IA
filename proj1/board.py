@@ -178,7 +178,9 @@ class Board:
         for obj in self.pieces:
             if obj.is_equal(p):
                 self.turn = 'player1' if self.turn == 'player2' else 'player2'
+                self.get_circle_from_pos((obj.screen_x, obj.screen_y)).occupying_piece = None
                 obj.move(new_col, new_row)
+                self.get_circle_from_pos((obj.screen_x, obj.screen_y)).occupying_piece = obj
                 break
 
     # Checks if the chosen move is valid and moves the piece. Returns true if the move is valid and false otherwise.
@@ -228,7 +230,7 @@ class Board:
 
         elif (clicked_circle.y, clicked_circle.x) in self.piece_valid_moves(self.selected_piece.row, self.selected_piece.col):
             self.get_circle_from_pos((self.selected_piece.screen_x, self.selected_piece.screen_y)).occupying_piece = None
-            self.move_piece(self.selected_piece.row, self.selected_piece.col, self.turn, clicked_circle.y, clicked_circle.x)
+            self.move(self.selected_piece, clicked_circle.y, clicked_circle.x)
             clicked_circle.occupying_piece = self.selected_piece
             self.selected_piece = None
 
@@ -263,5 +265,12 @@ class Board:
         moves = []
         for piece in pieces:
             moves.append((piece, self.piece_valid_moves(piece.row, piece.col)))
-            print((piece, self.piece_valid_moves(piece.row, piece.col)))
         return moves
+    
+    def board_deepcopy(self):
+        new_board = Board(self.size)
+        # Copy over all the pieces
+        new_board.pieces = [Piece(piece.col, piece.row, piece.player) for piece in self.pieces]
+        # Copy over the other attributes
+        new_board.turn = self.turn
+        return new_board

@@ -16,8 +16,6 @@ def draw(board, display):
     board.draw(display)
     pygame.display.update()
 
-#board.get_valid_moves('player1')
-
 def human_turn(board):
     pos = pygame.mouse.get_pos()
     for event in pygame.event.get():
@@ -36,8 +34,7 @@ def game(playerMode):
             case PlayerMode.HUMAN:
                 human_turn(board)
             case PlayerMode.AI_EASY:
-                execute_minimax_move(board, num_enemy_moves, 3)
-                print('ai easy')
+                execute_minimax_move(board, num_enemy_moves, 2)
             case PlayerMode.AI_MEDIUM:
                 print('ai medium')
             case PlayerMode.AI_HARD:
