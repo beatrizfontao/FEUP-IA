@@ -1,28 +1,52 @@
-from Board import *
+import pygame, sys
+from Board import Board
 
-def ask_move(player_turn):
-    print(player_turn + ' turn')
-    init_row = int(input('Initial Row: '))
-    init_col = int(input('Initial Col: '))
-    new_row = int(input('New Row: '))
-    new_col = int(input('New Col: '))
-    return [(init_row, init_col), (new_row, new_col)]
+from Menu import *
 
-def game(size, mode):
-    board = Board(size)
-    player_turn = 'player1'
-    game_over = 0
-    while game_over == 0:
-        valid_move = False
-        while not valid_move:
-            move = ask_move(player_turn)
-            valid_move = board.move_piece(move[0][0], move[0][1], player_turn, move[1][0], move[1][1])
-        player_turn = 'player1' if player_turn == 'player2' else 'player2'
-        game_over = board.is_game_over()
-    if game_over == 1:
-        print('Player 1 wins!')
-    else:
-        print('Player 2 wins!')
+pygame.init()
 
-if __name__ == "__main__":
-    game(9, 1)
+#Screen and Background
+screen = pygame.display.set_mode((595, 600))
+background = pygame.image.load("a.png")
+
+def draw(board, display):
+    screen.fill((0, 0, 0))
+    screen.blit(background, (0,0))
+    board.draw(display)
+    pygame.display.update()
+
+#board.get_valid_moves('player1')
+
+def human_turn(board):
+    pos = pygame.mouse.get_pos()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                board.handle_click(pos)
+
+def game(playerMode):
+    board = Board(9)
+
+    while True:
+        cur_turn = 0 if board.turn == 'player1' else 1
+        match playerMode[cur_turn]:
+            case PlayerMode.HUMAN:
+                human_turn(board)
+            case PlayerMode.AI_EASY:
+                print('ai easy')
+            case PlayerMode.AI_MEDIUM:
+                print('ai medium')
+            case PlayerMode.AI_HARD:
+                print('ai hard')
+
+        i = board.is_game_over()
+        if i != 0:
+            print("player " + str(i) + " won!")
+            sys.exit()
+        draw(board, screen)
+
+gameMode = draw_main_menu()
+print(gameMode)
+game(gameMode)
