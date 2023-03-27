@@ -3,36 +3,9 @@ from Circle import *
 import numpy as np
 import sys, pygame
 
-class Board:
+class View:
     # Size must be odd
     def __init__(self, size):
-        self.size = size
-        self.numPieces = (size - 1)*2
-        start = size // 2
-        self.center = start - 1
-        self.selected_piece = None
-        self.turn = 'player1'
-
-        pygame.init()
-
-        # Create pieces
-        self.pieces = []
-        for i in range(start-1, start + 3, 2):
-            for j in range(size):
-                if j >= 0 and j < start:
-                    piece = Piece(i, j, 'player1')
-                    self.pieces.append(piece)
-                elif j >= start+1 and j < size:
-                    piece = Piece(i, j, 'player2')
-                    self.pieces.append(piece)
-
-        self.forbidden_cells = []
-        for i in range(size):
-            for j in range(size):
-                if (i >= 0 and i < start - 1) or (i > start + 1 and i < size):
-                    if (j >= 0 and j < start - 1) or (j > start + 1 and j < size):
-                        cell = (i, j)
-                        self.forbidden_cells.append(cell)
 
         # Create all circle
         self.circles = []
@@ -239,7 +212,8 @@ class Board:
                 circle = self.get_circle_from_pos((57*pos[1] + 47, 58*pos[0] + 50))
                 circle.highlight = True
 
-        for circle in self.e.draw(display)
+        for circle in self.circles:
+            circle.draw(display)
     
     def get_player_pieces(self, player):
         pieces = []
