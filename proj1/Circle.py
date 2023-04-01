@@ -21,6 +21,9 @@ class Circle:
     def draw(self, display):
         if self.highlight:
             pygame.draw.rect(display, self.highlight_color, self.rect)
-
-        if self.occupying_piece != None:
-            display.blit(self.occupying_piece.image, (self.screen_x, self.screen_y))
+        if self.occupying_piece == 1:
+            image = pygame.image.load('piece.png').convert_alpha()
+            display.blit(image, (self.screen_x, self.screen_y))
+        elif self.occupying_piece == 2:
+            image = pygame.image.load('pieceB.png').convert_alpha()
+            display.blit(image, (self.screen_x, self.screen_y))

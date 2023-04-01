@@ -14,27 +14,36 @@ background = pygame.image.load("a.png")
 def draw(state, board, display):
     screen.fill((0, 0, 0))
     screen.blit(background, (0,0))
-    board.draw(state, display)
+    board.draw_board(state, display)
     pygame.display.update()
 
 def human_turn(state, board):
-    pos = pygame.mouse.get_pos()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                board.handle_click(pos, state)
+    print('turn')    
+    while True:
+        pos = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    print(pos)
+                    board.handle_click(pos, state)
+                    break
 
 def game(playerMode):
     state = State(9)
-    board = View(9)
-
+    print('state')
+    board = View(9, state.board)
+    print('board')
+    draw(state, board, screen)
     while True:
-        cur_turn = 0 if state.turn == 'player1' else 1
+        print('while')
+        cur_turn = 0 if state.turn == 1 else 1
         match playerMode[cur_turn]:
             case PlayerMode.HUMAN:
+                print('player 1 turn')
                 human_turn(state, board)
+                print('end player 1 turn')
             case PlayerMode.AI_EASY:
                 execute_minimax_move(board, num_enemy_moves, 3)
             case PlayerMode.AI_MEDIUM:

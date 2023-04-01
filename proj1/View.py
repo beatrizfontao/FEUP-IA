@@ -6,59 +6,46 @@ import sys, pygame
 
 class View:
     # Size must be odd
-    def __init__(self, size):
+    def __init__(self, size, board):
 
         self.size = size
         start = size // 2
         self.selected_piece = None
 
-        forbidden_cells = []
-        for i in range(size):
-            for j in range(size):
-                if (i >= 0 and i < start - 1) or (i > start + 1 and i < size):
-                    if (j >= 0 and j < start - 1) or (j > start + 1 and j < size):
-                        cell = (i, j)
-                        forbidden_cells.append(cell)
-
-        self.pieces = []
-        for i in range(start-1, start + 3, 2):
-            for j in range(size):
-                if j >= 0 and j < start:
-                    piece = Piece(i, j, 'player1')
-                    self.pieces.append(piece)
-                elif j >= start+1 and j < size:
-                    piece = Piece(i, j, 'player2')
-                    self.pieces.append(piece)
-
         # Create all circle
         self.circles = []
-        for i in range(0, self.size):
-            for j in range(0, self.size):
-                pos = (i, j)
-                if pos not in forbidden_cells:
-                    circle = Circle(pos[0], pos[1])
-                    for piece in self.pieces:
-                        if (piece.col, piece.row) == pos:
-                            circle.occupying_piece = piece
+        for i in range(len(board)):
+            for j in range(len(board)):
+                if(board[i][j] != -1):
+                    circle = Circle(i, j)
+                    circle.occupying_piece = board[i][j]
                     self.circles.append(circle)
 
     def handle_click(self, pos, board):
+        print('handle click')
+
         clicked_circle = self.get_circle_from_pos(pos)
         if clicked_circle is None:
+            print('clicked circle none')
             return
 
         if self.selected_piece is None:
-            if clicked_circle.occupying_piece is not None:
-                if clicked_circle.occupying_piece.player == board.turn:
+            print('selected piece none')
+            if clicked_circle.occupying_piece != 0:
+                print('not none')
+                if clicked_circle.occupying_piece == board.turn:
+                    print('right turn')
                     self.selected_piece = clicked_circle.occupying_piece
 
-        elif clicked_circle.occupying_piece is not None:
-            if clicked_circle.occupying_piece.player == board.turn:
+        elif clicked_circle.occupying_piece != 0:
+            if clicked_circle.occupying_piece == board.turn:
+                print('right turn')
                 self.selected_piece = clicked_circle.occupying_piece
                 for circle in self.circles:
                     circle.highlight = False
 
         elif (board.handle_player_move(clicked_circle.y, clicked_circle.x, self.selected_piece.col, self.selected_piece.row)):
+            print('handle player move')
             self.get_circle_from_pos((self.selected_piece.screen_x, self.selected_piece.screen_y)).occupying_piece = None
             clicked_circle.occupying_piece = self.selected_piece
             self.selected_piece = None
@@ -68,8 +55,11 @@ class View:
 
 
     def get_circle_from_pos(self, pos):
+        print(pos)
         for circle in self.circles:
             if circle.rect.collidepoint(pos):
+                print('collide')
+                print(circle.screen_x, circle.screen_y)
                 return circle
         return None
 

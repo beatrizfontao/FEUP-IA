@@ -21,7 +21,7 @@ class State:
                 if j >= 0 and j < start:
                     self.board[i][j] = 1
                 elif j >= start+1 and j < size:
-                    self.board[i][j] = 1
+                    self.board[i][j] = 2
 
         self.circle_paths = []
         for num in range(self.center):
@@ -57,6 +57,7 @@ class State:
         self.turn = 3 - self.turn
 
     def is_game_over(self):
+        print('aa')
         print(self.board)
         pieces = self.get_player_pieces(1) + self.get_player_pieces(2)
         for piece in pieces:
@@ -162,9 +163,9 @@ class State:
         l = len(self.circle_paths[c])
         j = (i+1) % l
         cur_pos = self.circle_paths[c][j]
-        print(self.circle_paths[c])
-        print(i, l, j)
-        print(cur_pos)
+        #print(self.circle_paths[c])
+        #print(i, l, j)
+        #print(cur_pos)
 
         while cur_pos != (col, row):
             if not self.is_cell_empty(cur_pos[0], cur_pos[1]):
