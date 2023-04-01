@@ -116,7 +116,7 @@ class State:
         while cur_col != col:
             if not self.is_cell_empty(cur_col, row):
                 break
-            if (cur_col, row) in self.forbidden_cells:
+            if self.board[row][cur_col] == -1:
                 break
             else:
                 valid_moves.append((cur_col, row))
@@ -126,7 +126,7 @@ class State:
         while cur_col != col:
             if not self.is_cell_empty(cur_col, row):
                 break
-            if (cur_col, row) in self.forbidden_cells:
+            if self.board[row][cur_col] == -1:
                 break
             else:
                 valid_moves.append((cur_col, row))

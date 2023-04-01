@@ -30,24 +30,22 @@ class View:
             return
 
         if self.selected_piece is None:
-            print('selected piece none')
             if clicked_circle.occupying_piece != 0:
-                print('not none')
                 if clicked_circle.occupying_piece == board.turn:
                     print('right turn')
-                    self.selected_piece = clicked_circle.occupying_piece
+                    self.selected_piece = clicked_circle
 
         elif clicked_circle.occupying_piece != 0:
             if clicked_circle.occupying_piece == board.turn:
-                print('right turn')
-                self.selected_piece = clicked_circle.occupying_piece
+                print('right turn!!!!!!!')
+                self.selected_piece = clicked_circle
                 for circle in self.circles:
                     circle.highlight = False
 
-        elif (board.handle_player_move(clicked_circle.y, clicked_circle.x, self.selected_piece.col, self.selected_piece.row)):
+        elif (board.handle_player_move(clicked_circle.x, clicked_circle.y, self.selected_piece.x, self.selected_piece.y)):
             print('handle player move')
-            self.get_circle_from_pos((self.selected_piece.screen_x, self.selected_piece.screen_y)).occupying_piece = None
-            clicked_circle.occupying_piece = self.selected_piece
+            clicked_circle.occupying_piece = self.selected_piece.occupying_piece
+            self.selected_piece.occupying_piece = 0
             self.selected_piece = None
 
         for circle in self.circles:

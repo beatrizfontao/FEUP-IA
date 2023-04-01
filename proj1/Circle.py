@@ -20,10 +20,13 @@ class Circle:
 
     def draw(self, display):
         if self.highlight:
+            print('highlight')
             pygame.draw.rect(display, self.highlight_color, self.rect)
         if self.occupying_piece == 1:
+            print('player1 piece')
             image = pygame.image.load('piece.png').convert_alpha()
             display.blit(image, (self.screen_x, self.screen_y))
         elif self.occupying_piece == 2:
+            print('player2 piece')
             image = pygame.image.load('pieceB.png').convert_alpha()
             display.blit(image, (self.screen_x, self.screen_y))
