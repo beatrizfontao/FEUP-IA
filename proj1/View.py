@@ -22,28 +22,28 @@ class View:
                     self.circles.append(circle)
 
     def handle_click(self, pos, board):
-        print('handle click')
+        #print('handle click')
 
         clicked_circle = self.get_circle_from_pos(pos)
         if clicked_circle is None:
-            print('clicked circle none')
+            #print('clicked circle none')
             return
 
         if self.selected_piece is None:
             if clicked_circle.occupying_piece != 0:
                 if clicked_circle.occupying_piece == board.turn:
-                    print('right turn')
+                    #print('right turn')
                     self.selected_piece = clicked_circle
 
         elif clicked_circle.occupying_piece != 0:
             if clicked_circle.occupying_piece == board.turn:
-                print('right turn!!!!!!!')
+                #print('right turn!!!!!!!')
                 self.selected_piece = clicked_circle
                 for circle in self.circles:
                     circle.highlight = False
 
         elif (board.handle_player_move(clicked_circle.x, clicked_circle.y, self.selected_piece.x, self.selected_piece.y)):
-            print('handle player move')
+            #print('handle player move')
             clicked_circle.occupying_piece = self.selected_piece.occupying_piece
             self.selected_piece.occupying_piece = 0
             self.selected_piece = None
@@ -56,8 +56,8 @@ class View:
         print(pos)
         for circle in self.circles:
             if circle.rect.collidepoint(pos):
-                print('collide')
-                print(circle.screen_x, circle.screen_y)
+                #print('collide')
+                #print(circle.screen_x, circle.screen_y)
                 return circle
         return None
 

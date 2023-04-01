@@ -12,25 +12,23 @@ screen = pygame.display.set_mode((595, 600))
 background = pygame.image.load("a.png")
 
 def draw(state, board, display):
-    print('DRAW')
+    #print('DRAW')
     screen.fill((0, 0, 0))
     screen.blit(background, (0,0))
     board.draw_board(state, display)
     pygame.display.update()
 
 def human_turn(state, board):
-    print('turn')    
-    while True:
-        pos = pygame.mouse.get_pos()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    print(pos)
-                    board.handle_click(pos, state)
-                    break
-        break
+    #print('turn')    
+    #while True:
+    pos = pygame.mouse.get_pos()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                print(pos)
+                board.handle_click(pos, state)
 
 def game(playerMode):
     state = State(9)
@@ -47,7 +45,7 @@ def game(playerMode):
                 print('ai medium')
             case PlayerMode.AI_HARD:
                 print('ai hard')
-        #draw(state, board, screen)
+        draw(state, board, screen)
         i = state.is_game_over()
         if i != 0:
             print("player " + str(i) + " won!")

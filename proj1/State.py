@@ -50,6 +50,8 @@ class State:
                     circle.append(pos)
             self.circle_paths.append(circle)
 
+        print(self.circle_paths)
+
     def move(self, col, row, new_col, new_row):
         player = self.board[row][col]
         self.board[row][col] = 0
@@ -163,11 +165,8 @@ class State:
         l = len(self.circle_paths[c])
         j = (i+1) % l
         cur_pos = self.circle_paths[c][j]
-        #print(self.circle_paths[c])
-        #print(i, l, j)
-        #print(cur_pos)
 
-        while cur_pos != (col, row):
+        while cur_pos != (row, col):
             if not self.is_cell_empty(cur_pos[0], cur_pos[1]):
                 break
             else:
@@ -196,3 +195,6 @@ class State:
             self.move(piece_col, piece_row, clicked_col, clicked_row)
             return True
         return False
+    
+s = State(9)
+s.piece_valid_moves(3,1)
