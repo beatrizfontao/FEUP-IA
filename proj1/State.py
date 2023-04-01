@@ -8,7 +8,7 @@ class State:
         self.center = start - 1
         self.turn = 1
 
-        self.board = np.zeros((size-1,size-1))
+        self.board = np.zeros((size,size))
         
         for i in range(size):
             for j in range(size):
@@ -23,9 +23,9 @@ class State:
                 elif j >= start+1 and j < size:
                     self.board[i][j] = 1
 
-        self.circle_paths = np.array()
+        self.circle_paths = []
         for num in range(self.center):
-            circle = np.array()
+            circle = []
             # top
             for col in range(num, size - num - 1):
                 pos = (num, col)
@@ -50,36 +50,20 @@ class State:
                     circle.append(pos)
             self.circle_paths.append(circle)
 
-    def move(self, row, col, new_row, new_col):
+    def move(self, col, row, new_col, new_row):
         player = self.board[row][col]
         self.board[row][col] = 0
         self.board[new_row][new_col] = player
         self.turn = 3 - self.turn
 
     def is_game_over(self):
-        pieces = []
-        pieces.append(self.get_player_pieces(1))
-        pieces.append(self.get_player_pieces(2))
+        print(self.board)
+        pieces = self.get_player_pieces(1) + self.get_player_pieces(2)
         for piece in pieces:
             valid_moves = self.piece_valid_moves(piece[1], piece[0])
             if len(valid_moves) == 0:
                 return 1 if self.board[piece[0]][piece[1]] == 2 else 2
         return 0
-
-
-    def get_circle_from_pos(self, pos):
-        for circle in self.circles:
-            if circle.rect.collidepoint(pos):
-                return circle
-        return None
-
-    def draw(self, display):
-        if self.selected_piece is not None:
-            for pos in self.piece_valid_moves(self.selected_piece.row, self.selected_piece.col):
-                circle = self.get_circle_from_pos((57*pos[1] + 47, 58*pos[0] + 50))
-                circle.highlight = True
-
-        for circle in self.e.draw(display)
     
     def get_player_pieces(self, player):
         pieces = []
@@ -87,7 +71,7 @@ class State:
             for j in range(len(self.board[i])):
                 if self.board[i][j] == player:
                     pieces.append((i, j))
-        return np.array(pieces)
+        return pieces
     
     def get_valid_moves(self, player):
         moves = []
@@ -127,7 +111,6 @@ class State:
 
     def horizontal_valid_moves(self, col, row):
         valid_moves = []
-
         cur_col = (col + 1) % self.size
         while cur_col != col:
             if not self.is_cell_empty(cur_col, row):
@@ -162,7 +145,7 @@ class State:
         else:
             return -1
         
-    def get_index(element, list):
+    def get_index(self, element, list):
         for i in range(len(list)):
             if list[i] == element:
                 return i
@@ -175,10 +158,13 @@ class State:
         if c == -1:
             return []
         
-        i = self.get_index((col, row), self.circle_paths[c])
+        i = self.get_index((col,row), self.circle_paths[c])
         l = len(self.circle_paths[c])
         j = (i+1) % l
         cur_pos = self.circle_paths[c][j]
+        print(self.circle_paths[c])
+        print(i, l, j)
+        print(cur_pos)
 
         while cur_pos != (col, row):
             if not self.is_cell_empty(cur_pos[0], cur_pos[1]):
@@ -203,3 +189,9 @@ class State:
 
     def piece_valid_moves(self, col, row):
         return [*set(self.horizontal_valid_moves(col, row) + self.vertical_valid_moves(col, row) + self.circular_valid_moves(col, row))]
+
+    def handle_player_move(self, clicked_col, clicked_row, piece_col, piece_row):
+        if (clicked_col, clicked_row) in self.piece_valid_moves(piece_col, piece_row):
+            self.move(piece_col, piece_row, clicked_col, clicked_row)
+            return True
+        return False

@@ -239,7 +239,9 @@ class Board:
                 circle = self.get_circle_from_pos((57*pos[1] + 47, 58*pos[0] + 50))
                 circle.highlight = True
 
-        for circle in self.e.draw(display)
+        for circle in self.circles:
+            circle.draw(display)
+
     
     def get_player_pieces(self, player):
         pieces = []
