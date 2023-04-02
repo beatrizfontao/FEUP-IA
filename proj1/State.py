@@ -50,8 +50,6 @@ class State:
                     circle.append(pos)
             self.circle_paths.append(circle)
 
-        print(self.circle_paths)
-
     def move(self, col, row, new_col, new_row):
         player = self.board[row][col]
         self.board[row][col] = 0
@@ -197,4 +195,4 @@ class State:
         return False
     
 s = State(9)
-s.piece_valid_moves(3,1)
+print(s.piece_valid_moves(3,1))
