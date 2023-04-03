@@ -1,7 +1,7 @@
-import pygame, sys
+import pygame, sys, time
 from State import State
 from View import View
-from Minimax import *
+from NewMinimax import *
 
 from Menu import *
 
@@ -43,16 +43,20 @@ def game(playerMode):
             case PlayerMode.HUMAN:
                 human_turn(state, board)
             case PlayerMode.AI_EASY:
-                execute_minimax_move(board, state, num_enemy_moves, 3)
+                execute_minimax_move(board, state, min_num_enemy_moves, 3)
+                time.sleep(1)
             case PlayerMode.AI_MEDIUM:
-                print('ai medium')
+                execute_minimax_move(board, state, piece_enemy_moves, 3)
+                time.sleep(1)
             case PlayerMode.AI_HARD:
-                print('ai hard')
+                execute_minimax_move(board, state, move_dif_eval, 3)
+                time.sleep(1)
         draw(state, board, screen)
         i = state.is_game_over()
         if i != 0:
             print("player " + str(i) + " won!")
-            sys.exit()
+            time.sleep(20000)
+            break
         
 
 gameMode = draw_main_menu()

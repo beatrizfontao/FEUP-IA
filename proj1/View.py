@@ -1,5 +1,6 @@
 from Circle import *
 from State import *
+from NewMinimax import *
 import numpy as np
 import sys, pygame
 
@@ -24,7 +25,17 @@ class View:
         if clicked_circle is None:
             hint_rect = pygame.Rect(530, 20, 45, 45) 
             if hint_rect.collidepoint(pos):
-                print('HINT')
+                #minimax
+                _, piece, move = minimax(board, 3, -math.inf, math.inf, True, piece_enemy_moves)
+                print(piece)
+                print(move)
+
+                #highlight piece and move
+                piece_circle = self.get_circle_from_pos((57*piece[0] + 47, 58*piece[1] + 50))
+                move_circle = self.get_circle_from_pos((57*move[0] + 47, 58*move[1] + 50))
+
+                piece_circle.highlight = True
+                move_circle.highlight = True
                 return
             else:
                 return
@@ -47,7 +58,6 @@ class View:
 
         for circle in self.circles:
             circle.highlight = False
-
 
     def get_circle_from_pos(self, pos):
         for circle in self.circles:
