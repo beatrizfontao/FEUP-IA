@@ -11,9 +11,16 @@ pygame.init()
 screen = pygame.display.set_mode((595, 600))
 background = pygame.image.load("a.png")
 
+hint = pygame.image.load("hint.png")
+width = hint.get_rect().width
+height = hint.get_rect().height
+hint = pygame.transform.scale(hint, (width/5, height/5))
+print(width/5, height/5)
+
 def draw(state, board, display):
     screen.fill((0, 0, 0))
     screen.blit(background, (0,0))
+    screen.blit(hint, (530,20))
     board.draw_board(state, display)
     pygame.display.update()
 

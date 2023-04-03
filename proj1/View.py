@@ -22,7 +22,12 @@ class View:
     def handle_click(self, pos, board):
         clicked_circle = self.get_circle_from_pos(pos)
         if clicked_circle is None:
-            return
+            hint_rect = pygame.Rect(530, 20, 45, 45) 
+            if hint_rect.collidepoint(pos):
+                print('HINT')
+                return
+            else:
+                return
 
         if self.selected_piece is None:
             if clicked_circle.occupying_piece != 0:
