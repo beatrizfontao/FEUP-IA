@@ -3,6 +3,7 @@ import sys
 
 from enum import Enum 
 
+#Enum that represents the game mode of a player
 class PlayerMode(Enum):
     HUMAN = 1
     AI_HARD = 2
@@ -17,8 +18,11 @@ screen = pygame.display.set_mode(size)
 font_title = pygame.font.SysFont(None, 50)
 font_option = pygame.font.SysFont(None, 30)
 
+"""
+Draws the game's main menu on the screen and returns a tuple the game modes chosen
+"""
 def draw_main_menu():
-    menu = font_title.render("Menu", True, (0, 0, 0))
+    menu = font_title.render("WANA", True, (0, 0, 0))
     menu_rect = menu.get_rect(center=(290, 100))
 
     human_vs_human = font_option.render("Human vs Human", True, (0, 0, 0))
@@ -60,7 +64,9 @@ def draw_main_menu():
 
         pygame.display.update()
 
-
+"""
+Draws the menu to choose the ai difficulty
+"""
 def draw_ai_menu(player):
     if(player == 1):
         title = font_title.render("Player 1 AI Difficulty", True, (0, 0, 0))

@@ -51,11 +51,6 @@ def minimax(state, depth, alpha, beta, maximizing, player, evaluate_func):
                     break
         return min_eval
 
-<<<<<<< HEAD
-def num_enemy_moves(state):
-    available_moves = len(state.get_valid_moves(state.turn))
-    return float('-inf') if available_moves == 0 else available_moves
-=======
 def min_num_enemy_moves(state):
     available_moves = state.get_valid_moves(3 - state.turn)
     num_moves = 0
@@ -87,4 +82,3 @@ def dif_moves(state):
         n = len(moves)
         num_moves_cur = min(num_moves_cur, n)
     return num_moves_enemy-num_moves_cur
->>>>>>> 216d9722141358e9b59ce34212ff6ee215790836
