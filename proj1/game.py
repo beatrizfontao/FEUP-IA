@@ -151,7 +151,17 @@ def get_player_mode(playerMode):
             p1 = 'ai easy'
         case PlayerMode.AI_MEDIUM:
             p1 = 'ai medium'
-        
+        case PlayerMode.AI_HARD:
+            p1 = 'ai hard'
+    match(playerMode[1]):
+        case 5:
+            p2 = 'random'
+        case PlayerMode.AI_EASY:
+            p2 = 'ai easy'
+        case PlayerMode.AI_MEDIUM:
+            p2 = 'ai medium'
+        case PlayerMode.AI_HARD:
+            p2 = 'ai hard'
 
 #Invoke the menu drawing function and the game loop
 gameMode = draw_main_menu()
