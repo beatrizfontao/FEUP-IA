@@ -1,84 +1,124 @@
 from State import *
 from View import *
 from copy import deepcopy
-    
-def execute_minimax_move(board, state, evaluate_func, depth):
-    best_move = None
-    best_eval = float('-inf')
-    for (piece, moves) in state.get_valid_moves(state.turn):
-        for move in moves:
-            if(piece == (3,1) and move == (4,1)):
-                print("a")
-            copy_state = deepcopy(state)
-            copy_state.move(piece[0], piece[1], move[0], move[1])
-            new_state_eval = minimax(copy_state, depth - 1, float('-inf'), float('inf'), False, state.turn, evaluate_func)
-            print(state.turn, new_state_eval, piece, move)
-            if new_state_eval > best_eval:
-                best_move = (piece, move)
-                best_eval = new_state_eval
-    
-    print(best_move)
-    (piece, move) = best_move
-    state.move(piece[0], piece[1], move[0], move[1])
-    board.update(piece[0], piece[1], move[0], move[1])
+import math
+import numpy as np
 
-def minimax(state, depth, alpha, beta, maximizing, player, evaluate_func):
-    if depth == 0 or state.is_game_over() != 0:
-        return evaluate_func(state) #* (1 if player == 1 else -1)
+#State history used to avoid repeated states
+history = []
+
+"""
+Minimax Algorithm with Alpha-Beta Cuts
+Returns the best evaluation, the best move to make and the pice that should make that move
+"""
+def minimax(state, depth, alpha, beta, maximizing, evaluation_func):
+    if depth == 0 or state.is_game_over():
+        return evaluation_func(state), None, None
     
     if maximizing:
-        max_eval = float('-inf')
-        for (piece, moves) in state.get_valid_moves(state.turn):
+        max_eval = -math.inf
+        best_piece = None
+        best_move = None
+        for piece, moves in state.get_valid_moves(state.turn):
             for move in moves:
-                copy_state = deepcopy(state)
-                copy_state.move(piece[0], piece[1], move[0], move[1])
-                eval = minimax(copy_state, depth - 1, alpha, beta, False, player, evaluate_func)
-                max_eval = max(max_eval, eval)
-                alpha = max(alpha, eval)
-                if beta <= alpha:
+                new_state = deepcopy(state)
+                new_state.move(piece[0], piece[1], move[0], move[1])
+                if matrix_in_list(new_state.board):
+                    continue
+                eval, _, _ = minimax(new_state, depth-1, alpha, beta, False, evaluation_func)
+                if  eval > max_eval:
+                    max_eval = eval
+                    best_piece = piece
+                    best_move = move
+                alpha = max(eval, max_eval)
+                if alpha >= beta:
                     break
-        return max_eval
+        m_eval = max_eval
     else:
-        min_eval = float('inf')
-        for (piece, moves) in state.get_valid_moves(state.turn):
+        min_eval = math.inf
+        best_piece = None
+        best_move = None
+        for piece, moves in state.get_valid_moves(state.turn):
             for move in moves:
-                copy_state = deepcopy(state)
-                copy_state.move(piece[0], piece[1], move[0], move[1])
-                eval = minimax(copy_state, depth - 1, alpha, beta, True, player, evaluate_func)
-                min_eval = min(min_eval, eval)
-                beta = min(beta, eval)
+                new_state = deepcopy(state)
+                new_state.move(piece[0], piece[1], move[0], move[1])
+                if matrix_in_list(new_state.board):
+                    continue
+                eval, _, _ = minimax(new_state, depth-1, alpha, beta, True, evaluation_func)
+                if eval < min_eval:
+                    min_eval = eval
+                    best_piece = piece
+                    best_move = move
+                beta = min(eval, min_eval)
                 if alpha <= beta:
                     break
-        return min_eval
+        m_eval = min_eval
+    return m_eval, best_piece, best_move
 
+"""
+Evalution Function
+Returns the negative total number of moves the player has
+"""
 def min_num_enemy_moves(state):
-    available_moves = state.get_valid_moves(3 - state.turn)
+    available_moves = state.get_valid_moves(state.turn)
     num_moves = 0
-    for piece, moves in available_moves:
+    for _, moves in available_moves:
         n = len(moves)
+        if n == 0:
+            return math.inf
         num_moves += n
 
-    return num_moves
-    
-def min_piece_enemy_moves(state):
-    available_moves = state.get_valid_moves(3 - state.turn)
-    num_moves = float('inf')
-    for piece, moves in available_moves:
+    return -num_moves
+
+"""
+Evaluation Function
+Returns the negative number of moves that the piece with the least amount of moves of a player has
+"""
+def piece_enemy_moves(state):
+    available_moves = state.get_valid_moves(state.turn)
+    num_moves = math.inf
+    for _, moves in available_moves:
         n = len(moves)
+        if n == 0:
+            return math.inf
         num_moves = min(num_moves, n)
 
-    return num_moves
+    return -num_moves
 
-def dif_moves(state):
-    available_moves_enemy = state.get_valid_moves(3 - state.turn)
-    available_moves_cur = state.get_valid_moves(state.turn)
-    num_moves_enemy = float('inf')
-    for piece, moves in available_moves_enemy:
+"""
+Evaluation Function
+Similar to piece_enemy_moves, but subtracts the number of moves that the piece with the least amount of moves of the player with the value for the opponent 
+"""
+def move_dif_eval(state):
+    player_moves = state.get_valid_moves(3 - state.turn)
+    player_num_moves = 0
+    for _, moves in player_moves:
         n = len(moves)
-        num_moves_enemy = min(num_moves_enemy, n)
+        if n == 0:
+            return -math.inf
+        player_num_moves = min(player_num_moves, n)
+    opponent_moves = state.get_valid_moves(state.turn)
+    opponent_num_moves = 0
+    for _, moves in opponent_moves:
+        n = len(moves)
+        if n == 0:
+            return math.inf
+        opponent_num_moves = min(opponent_num_moves, n)
+    return player_num_moves - opponent_num_moves
 
-    num_moves_cur = float('inf')
-    for piece, moves in available_moves_cur:
-        n = len(moves)
-        num_moves_cur = min(num_moves_cur, n)
-    return num_moves_enemy-num_moves_cur
+"""
+Applies the minimax function to the given state with the evaluation function and executes the move.
+Updates the history list with the new state.
+"""
+def execute_minimax_move(board, state, evaluation_func, depth):
+    _, piece, move = minimax(state, depth, -math.inf, math.inf, True, evaluation_func)
+    state.move(piece[0], piece[1], move[0], move[1])
+    history.append(np.array(state.board))
+    board.update(piece[0], piece[1], move[0], move[1])
+
+"""
+Checks the state already is in the state history
+This avoids repeated states 
+"""
+def matrix_in_list(state):
+    return any(np.array_equal(m, state) for m in history)

@@ -1,7 +1,7 @@
-import pygame, sys, time
+import pygame, sys, time, random, csv, math
 from State import State
 from View import View
-from NewMinimax import *
+from Minimax import *
 
 from Menu import *
 
@@ -84,32 +84,75 @@ def human_turn(state, board):
                 board.handle_click(pos, state)
 
 """
+Picks a random valid move of the current player and executes it
+"""
+def random_move(state, board):
+    valid_moves = state.get_valid_moves(state.turn)
+    piece, moves = random.choice(valid_moves)
+    move = random.choice(moves)
+    state.move(piece[0], piece[1], move[0], move[1])
+    board.update(piece[0], piece[1], move[0], move[1])
+    
+"""
 Game loop. Receives the game mode chosen by the user and contains a while true loop that breaks when either one of the players wins the game
 """
 def game(playerMode):
     state = State(9)
     board = View(9, state.board)
     draw(state, board, screen)
+    start = time.time()
+    num_moves = 0
     while True:
         cur_turn = 0 if state.turn == 1 else 1
         match playerMode[cur_turn]:
             case PlayerMode.HUMAN:
                 human_turn(state, board)
             case PlayerMode.AI_EASY:
-                execute_minimax_move(board, state, min_num_enemy_moves, 3)
-                time.sleep(1)
+                execute_minimax_move(board, state, min_num_enemy_moves, 4)
+                num_moves += 1
+                #time.sleep(1)
             case PlayerMode.AI_MEDIUM:
-                execute_minimax_move(board, state, piece_enemy_moves, 3)
-                time.sleep(1)
+                execute_minimax_move(board, state, piece_enemy_moves, 4)
+                num_moves += 1
+                #time.sleep(1)
             case PlayerMode.AI_HARD:
                 execute_minimax_move(board, state, move_dif_eval, 3)
-                time.sleep(1)
+                num_moves += 1
+                #time.sleep(1)
+            case 5:
+                random_move(board, state)
+                num_moves += 1
+                #time.sleep(1)
         draw(state, board, screen)
         i = state.is_game_over()
         if i != 0:
-            draw_end(state, board, screen, i)
+            end = time.time()
+            time_elapsed = end - start
+            #escrever para um ficheiro
+            f = open('results.csv', 'w')
+            # create the csv writer
+            writer = csv.writer(f)
+            mode = get_player_mode(playerMode)
+            # write a row to the csv file
+            writer.writerow(f"{playerMode}, {time_elapsed}, {math.ceil(num_moves/2.0)}\n")
+
+            # close the file
+            f.close()
             break
+
+            #draw_end(state, board, screen, i)
+            #break
+    
+def get_player_mode(playerMode):
+    match(playerMode[0]):
+        case 5:
+            p1 = 'random'
+        case PlayerMode.AI_EASY:
+            p1 = 'ai easy'
+        case PlayerMode.AI_MEDIUM:
+            p1 = 'ai medium'
         
+
 #Invoke the menu drawing function and the game loop
 gameMode = draw_main_menu()
 game(gameMode)

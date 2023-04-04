@@ -23,7 +23,8 @@ class Circle:
     # Draws the piece or displays the higlights (if a piece has been selected) and its occupying pieces
     def draw(self, display):
         if self.highlight:
-            pygame.draw.rect(display, self.highlight_color, self.rect)
+            image = pygame.image.load('images/pieceHighlight.png').convert_alpha()
+            display.blit(image, (self.screen_x, self.screen_y))
         # If the circle is occupied by player 1's piece, draw the player 1's respective image
         elif self.occupying_piece == 1:
             image = pygame.image.load('images/piece1.png').convert_alpha()

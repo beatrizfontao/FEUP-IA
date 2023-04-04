@@ -1,6 +1,6 @@
 from Circle import *
 from State import *
-from NewMinimax import *
+from Minimax import *
 import numpy as np
 import sys, pygame
 
