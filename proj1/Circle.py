@@ -26,9 +26,9 @@ class Circle:
             pygame.draw.rect(display, self.highlight_color, self.rect)
         # If the circle is occupied by player 1's piece, draw the player 1's respective image
         elif self.occupying_piece == 1:
-            image = pygame.image.load('images/piece.png').convert_alpha()
+            image = pygame.image.load('images/piece1.png').convert_alpha()
             display.blit(image, (self.screen_x, self.screen_y))
         # If the circle is occupied by player 2's piece, draw the player 2's respective image
         elif self.occupying_piece == 2:
-            image = pygame.image.load('images/pieceB.png').convert_alpha()
+            image = pygame.image.load('images/piece2.png').convert_alpha()
             display.blit(image, (self.screen_x, self.screen_y))

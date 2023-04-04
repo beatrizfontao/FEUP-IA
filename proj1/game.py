@@ -8,8 +8,8 @@ from Menu import *
 pygame.init()
 
 #Screen and Background
-screen = pygame.display.set_mode((595, 600))
-background = pygame.image.load("images/a.png")
+screen = pygame.display.set_mode((595, 650))
+background = pygame.image.load("images/board.png")
 
 hint = pygame.image.load("images/hint.png")
 width = hint.get_rect().width
@@ -21,11 +21,55 @@ hint = pygame.transform.scale(hint, (width/5, height/5))
 Draws the current state of the game on the screen
 """
 def draw(state, board, display):
-    screen.fill((0, 0, 0))
+    match(state.turn):
+        case 1:
+            text = font_option.render("Player 1 Turn", True, (0, 0, 0))
+        case 2:
+            text = font_option.render("Player 2 Turn", True, (0, 0, 0))
+    text_rect = text.get_rect(center=(size[0]/2,625))
+
+    screen.fill((255, 255, 255))
     screen.blit(background, (0,0))
     screen.blit(hint, (530,20))
+    screen.blit(text, text_rect)
     board.draw_board(state, display)
     pygame.display.update()
+
+"""
+Draws the end game state and displays the winner
+Waits for the ESC input to close teh game
+"""
+def draw_end(state, board, display, player):
+
+    match(player):
+        case 1:
+            text = font_option.render("Player 1 Wins!", True, (0, 0, 0))
+        case 2:
+            text = font_option.render("Player 2 Wins!", True, (0, 0, 0))
+    text_rect = text.get_rect(center=(size[0]/2, 600))
+    
+    esc = font_option.render("Press ESC to exit", True, (0, 0, 0))
+    esc_rect = esc.get_rect(center=(size[0]/2, 630))
+
+    while True:
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            #Closes the game if the ESC key is pressed
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+        
+        screen.fill((255, 255, 255))
+        screen.blit(background, (0,0))
+        screen.blit(hint, (530,20))
+        board.draw_board(state, display)
+        screen.blit(text, text_rect)
+        screen.blit(esc, esc_rect)
+        pygame.display.update()
 
 """
 Identifies when the human player clicks on the screen and processes those clicks inside the handle_click function
@@ -63,8 +107,7 @@ def game(playerMode):
         draw(state, board, screen)
         i = state.is_game_over()
         if i != 0:
-            print("player " + str(i) + " won!")
-            time.sleep(5)
+            draw_end(state, board, screen, i)
             break
         
 #Invoke the menu drawing function and the game loop

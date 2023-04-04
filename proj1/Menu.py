@@ -12,7 +12,7 @@ class PlayerMode(Enum):
 
 pygame.init()
 
-size = (595, 600)
+size = (595, 650)
 screen = pygame.display.set_mode(size)
 
 font_title = pygame.font.SysFont(None, 50)
@@ -23,22 +23,26 @@ Draws the game's main menu on the screen and returns a tuple the game modes chos
 """
 def draw_main_menu():
     menu = font_title.render("WANA", True, (0, 0, 0))
-    menu_rect = menu.get_rect(center=(290, 100))
+    menu_rect = menu.get_rect(center=(size[0] // 2, 125))
 
     human_vs_human = font_option.render("Human vs Human", True, (0, 0, 0))
-    human_vs_human_rect = human_vs_human.get_rect(center=(size[0] // 2, 250))
+    human_vs_human_rect = human_vs_human.get_rect(center=(size[0] // 2, 275))
 
     human_vs_ai = font_option.render("Human vs AI", True, (0, 0, 0))
-    human_vs_ai_rect = human_vs_ai.get_rect(center=(size[0] // 2, 310))
+    human_vs_ai_rect = human_vs_ai.get_rect(center=(size[0] // 2, 335))
 
     ai_vs_ai = font_option.render("AI vs AI", True, (0, 0, 0))
-    ai_vs_ai_rect = ai_vs_ai.get_rect(center=(size[0] // 2, 370))
+    ai_vs_ai_rect = ai_vs_ai.get_rect(center=(size[0] // 2, 395))
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if human_vs_human_rect.collidepoint(event.pos):
                     return (PlayerMode.HUMAN, PlayerMode.HUMAN)
