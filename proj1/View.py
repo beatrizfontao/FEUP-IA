@@ -1,8 +1,7 @@
 from Circle import *
 from State import *
 from Minimax import *
-import numpy as np
-import sys, pygame
+import pygame
 
 class View:
     # Size must be odd

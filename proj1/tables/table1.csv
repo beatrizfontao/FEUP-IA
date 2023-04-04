@@ -1,0 +1,10 @@
+player1,player2,depth1,depth2,time,num_rounds,winner
+move_dif_eval,move_dif_eval,2,2,2.472761631011963,3,1
+move_dif_eval,move_dif_eval,2,4,37.029996395111084,3,1
+move_dif_eval,move_dif_eval,4,2,119.98047184944153,5,1
+piece_enemy_moves,piece_enemy_moves,3,3,84.89894700050354,5,1
+piece_enemy_moves,piece_enemy_moves,2,4,272.06515526771545,3,2
+piece_enemy_moves,piece_enemy_moves,4,2,204.73730158805847,3,1
+min_num_enemy_moves,min_num_enemy_moves,3,3,145.1507432460785,5,1
+min_num_enemy_moves,min_num_enemy_moves,2,4,446.2521667480469,2,2
+min_num_enemy_moves,min_num_enemy_moves,4,2,699.3413891792297,3,1

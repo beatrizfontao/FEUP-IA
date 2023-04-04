@@ -1,0 +1,25 @@
+player1,player2,time,rounds,winner
+random,ai easy,0.15000009536743164,1,2
+random,ai easy,1.4799962043762207,5,2
+random,ai easy,4.50707221031189,13,2
+random,ai easy,3.925462245941162,9,2
+random,ai easy,2.4375946521759033,6,2
+random,ai medium,20.675272703170776,5,2
+random,ai medium,9.718003034591675,3,2
+random,ai medium,9.395080089569092,2,2
+random,ai medium,39.059998750686646,6,2
+random,ai medium,6.211997747421265,1,2
+random,ai hard,228.67368340492249,7,2
+random,ai hard,178.12594532966614,5,2
+random,ai hard,103.40991044044495,3,2
+random,ai hard,76.5351619720459,2,2
+random,ai hard,243.2372169494629,8,2
+ai easy,ai easy,2.769000768661499,2,1
+ai medium,ai medium,21.324917316436768,3,1
+ai hard,ai hard,301.02248072624207,5,1
+ai easy,ai hard,186.12237882614136,4,2
+ai hard,ai easy,111.45261454582214,7,2
+ai easy,ai medium,28.81199622154236,14,2
+ai medium,ai easy,13.489007711410522,3,1
+ai medium,ai hard,80.32899260520935,3,2
+ai hard,ai medium,117.82100248336792,3,2

@@ -1,0 +1,30 @@
+gameMode,time,moves,winner
+random vs random,0.41902923583984375,35,1
+random vs random,0.36699771881103516,47,2
+random vs random,0.25300121307373047,32,2
+random vs random,0.014997482299804688,2,1
+random vs random,0.21699047088623047,26,2
+random vs ai easy,32.509769439697266,26,2
+random vs ai easy,13.107993125915527,2,2
+random vs ai easy,8.312024593353271,2,2
+random vs ai easy,8.778998136520386,3,2
+random vs ai easy,10.415009260177612,2,2
+random vs ai medium,22.097997188568115,4,2
+random vs ai medium,34.463998794555664,7,2
+random vs ai medium,7.266003131866455,2,2
+random vs ai medium,13.401000261306763,2,2
+random vs ai medium,15.82500147819519,4,2
+random vs ai hard,53.78783702850342,15,2
+random vs ai hard,60.41965055465698,12,2
+random vs ai hard,13.622997045516968,4,2
+random vs ai hard,32.59799933433533,8,2
+random vs ai hard,18.183993816375732,5,2
+ai easy vs ai easy,61.37700033187866,3,2
+ai medium vs ai medium,23.4069983959198,3,1
+ai hard vs ai hard,19.915996551513672,3,1
+ai easy vs ai hard,90.51800084114075,5,1
+ai hard vs ai easy,22.47105860710144,2,2
+ai easy vs ai medium,34.9707510471344,2,2
+ai medium vs ai easy,37.60815715789795,2,2
+ai medium vs ai hard,63.73615765571594,5,2
+ai hard vs ai medium,14.394022464752197,1,2

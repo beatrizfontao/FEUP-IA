@@ -1,0 +1,7 @@
+player1,player2,time,rounds,winner
+ai easy,ai hard,130.10699725151062,3,1
+ai hard,ai easy,682.5942394733429,5,1
+ai easy,ai medium,11.060998916625977,2,2
+ai medium,ai easy,27.28599715232849,4,1
+ai medium,ai hard,387.35703706741333,5,1
+ai hard,ai medium,824.6953775882721,6,2
